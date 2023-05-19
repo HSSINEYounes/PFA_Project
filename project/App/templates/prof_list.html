@@ -1,0 +1,61 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div style="display:flex; align-items:center; justify-content:center; margin:5%">
+  <h1> La liste des professeurs</h1>
+</div>
+
+  <div class="container">
+    <form class="d-flex justify-content-center"  role="search" action="{% url 'searchProf' %}" >
+      <input class='form-control me-2' type="search" placeholder="Search" aria-label="Search" name="keyword">
+      <button class="btn btn-outline-success" type="submit">Recherche</button>
+    </form>    
+    <div class="row">
+      {% for prof in professors %}
+        <div class="col-md-4">
+          <div class="card mb-4">
+            <div class="card-body">
+              <h5 class="card-title" style="font-size:33px;">{{ prof.nom |upper }} {{ prof.prenom }}</h5>
+              <p class="card-text"><span style="color:#38c9d6;">CNE:</span> {{ prof.cne }}</p>
+              <p class="card-text"><span style="color:#38c9d6;">Genre:</span> {{ prof.genre }}</p>
+              <p class="card-text"><span style="color:#38c9d6;">Email:</span> {{ prof.email }}</p>
+              <p class="card-text"><span style="color:#38c9d6;">Telephone:</span> {{ prof.telephone }}</p>
+              <p class="card-text"><span style="color:#38c9d6;">salaire:</span> {{ prof.salaire }} DH</p>
+            </div>
+          </div>
+        </div>
+      {% endfor %}
+    </div>
+
+    <div class="paginatorDiv" >
+      {% if professors.has_previous %}
+          <a href="?page={{ professors.previous_page_number }}" class="btn btn-outline-primary">&laquo; Prev</a>
+      {% endif %}
+      {% if professors.number > 4 %}
+          <a href="?page=1" class="btn btn-outline-primary">1</a>
+          {% if professors.number > 5 %}
+              <span class="btn disabled">...</span>
+          {% endif %}
+      {% endif %}
+      {% for i in professors.paginator.page_range %}  
+          {% if professors.number == i %}
+              <span class="btn btn-primary active">{{ i }}</span>
+          {% elif i > professors.number|add:-3 and i < professors.number|add:3 %}
+              <a href="?page={{ i }}" class="btn btn-outline-primary" >{{ i }}</a>
+          {% endif %}
+      {% endfor %}
+      {% if professors.number < professors.paginator.num_pages|add:-3 %}
+          {% if professors.number < professors.paginator.num_pages|add:-4 %}
+              <span class="btn disabled">...</span>
+          {% endif %}
+          <a href="?page={{ professors.paginator.num_pages }}" class="btn btn-outline-primary">{{ professors.paginator.num_pages }}</a>
+      {% endif %}
+      {% if professors.has_next %}
+          <a href="?page={{ professors.next_page_number }}" class="btn btn-outline-primary">Next &raquo;</a>
+      {% endif %}
+  </div>
+  </div>
+  
+
+  {% endblock %}
+
